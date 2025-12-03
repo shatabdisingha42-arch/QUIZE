@@ -1,0 +1,5 @@
+{
+  "name": "QUIZE",
+  "description": "An AI-powered quiz generator that creates custom quizzes on any subject you choose. Test your knowledge with instant feedback.",
+  "requestFramePermissions": []
+}
