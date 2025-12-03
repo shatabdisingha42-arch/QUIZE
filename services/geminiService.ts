@@ -1,17 +1,19 @@
 import { GoogleGenAI, Type } from "@google/genai";
-import { QuizQuestion } from "../types";
+import { QuizQuestion, Difficulty } from "../types";
 
-const apiKey = process.env.API_KEY;
+export const generateQuizQuestions = async (subject: string, difficulty: Difficulty): Promise<QuizQuestion[]> => {
+  // Use import.meta.env for Vite/Netlify compatibility.
+  // We use (import.meta as any) to avoid TypeScript errors if types aren't fully configured.
+  const apiKey = (import.meta as any).env?.VITE_API_KEY;
 
-// Initialize the Gemini client
-const ai = new GoogleGenAI({ apiKey: apiKey });
-
-export const generateQuizQuestions = async (subject: string): Promise<QuizQuestion[]> => {
   if (!apiKey) {
-    throw new Error("API Key is missing. Please set the API_KEY environment variable.");
+    throw new Error("API Key is missing. Please add 'VITE_API_KEY' to your Netlify Site Configuration (Environment Variables).");
   }
 
-  const prompt = `Generate a challenging and engaging multiple-choice quiz about "${subject}".
+  // Initialize the client only when needed to prevent app crash on load
+  const ai = new GoogleGenAI({ apiKey });
+
+  const prompt = `Generate a ${difficulty} difficulty multiple-choice quiz about "${subject}".
   Create exactly 5 questions.
   For each question, provide 4 options, the index of the correct option (0-3), and a brief interesting explanation of why that answer is correct.
   Ensure the tone is fun and educational.`;

@@ -3,7 +3,7 @@ import { SetupScreen } from './components/SetupScreen';
 import { QuizScreen } from './components/QuizScreen';
 import { ResultsScreen } from './components/ResultsScreen';
 import { generateQuizQuestions } from './services/geminiService';
-import { AppStatus, QuizQuestion } from './types';
+import { AppStatus, QuizQuestion, Difficulty } from './types';
 
 function App() {
   const [status, setStatus] = useState<AppStatus>(AppStatus.SETUP);
@@ -12,18 +12,19 @@ function App() {
   const [score, setScore] = useState(0);
   const [error, setError] = useState<string | null>(null);
 
-  const handleStartQuiz = async (inputSubject: string) => {
+  const handleStartQuiz = async (inputSubject: string, difficulty: Difficulty) => {
     setSubject(inputSubject);
     setStatus(AppStatus.LOADING);
     setError(null);
 
     try {
-      const generatedQuestions = await generateQuizQuestions(inputSubject);
+      const generatedQuestions = await generateQuizQuestions(inputSubject, difficulty);
       setQuestions(generatedQuestions);
       setStatus(AppStatus.QUIZ);
     } catch (err: any) {
       console.error(err);
-      setError("Failed to generate quiz. Please check your connection and try again.");
+      // Display the actual error message so the user knows if it's an API Key issue
+      setError(err.message || "Failed to generate quiz. Please check your connection and try again.");
       setStatus(AppStatus.SETUP);
     }
   };

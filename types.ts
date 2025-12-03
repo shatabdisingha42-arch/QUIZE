@@ -1,3 +1,5 @@
+export type Difficulty = 'Easy' | 'Medium' | 'Hard';
+
 export interface QuizQuestion {
   question: string;
   options: string[];
